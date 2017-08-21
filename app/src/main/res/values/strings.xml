@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Kwowledge</string>
+
+    <!-- Battle.net API key information (OAuth2) -->
+    <!-- Application key -->
+    <string name="client_id">rk4p6s9rn86dq3jgh4tu4fgv4mfphbyc</string>
+    <!-- Secret -->
+    <string name="client_secret">BA3f7tcMfKMhBkFbsceThgCHhG4YFCtF</string>
+    <!-- Callback URL -->
+    <!--<string name="callback_url">https://localhost</string>-->
+
+    <!-- Base URL -->
+    <string name="base_url">https://us.api.battle.net/wow/</string>
+
+    <!-- UI Localized Strings -->
+    <string name="login_button_text">Login</string>
+
+</resources>
