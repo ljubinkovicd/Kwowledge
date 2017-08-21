@@ -2,42 +2,41 @@ package com.example.ljubinkovicd.kwowledge
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.ListView
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import com.example.ljubinkovicd.kwowledge.adapter.BossListAdapter
 import com.example.ljubinkovicd.kwowledge.model.Boss
 import com.example.ljubinkovicd.kwowledge.model.api.BattleNetApi
-import kotlinx.android.synthetic.main.activity_main.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    var listView : ListView? = null
+    private val rv by lazy { findViewById<RecyclerView>(R.id.boss_list_recycler_view) }
+    private val bossAdapter = BossListAdapter()
     var bosses = mutableListOf<Boss>()
-    var bossesAdapter : ArrayAdapter<Boss>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        listView = ListView(this)
-        bosses = mutableListOf<Boss>()
-
-        setContentView(listView)
-
-        bossesAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, bosses)
-        listView?.adapter = bossesAdapter
+        rv.adapter = bossAdapter
+        rv.layoutManager = LinearLayoutManager(this)
 
         val api = BattleNetApi()
         api.loadBosses(Locale.US, resources.getString(R.string.client_id))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe ({
-                    boss -> bosses.add(Boss(boss.name, boss.description, boss.health, boss.npcs))
+                .subscribe ({ boss ->
+                    val description = boss.description ?: "No description for ${boss.name}"
+                    bosses.add(Boss(boss.name, description, boss.health, boss.npcs))
                 }, {
                     error -> error.printStackTrace()
                 }, {
-                    bossesAdapter?.notifyDataSetChanged()
+                    bossAdapter.initializeDataSource(bosses)
+                    bossAdapter.notifyDataSetChanged()
                 })
     }
 }
